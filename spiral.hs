@@ -1,5 +1,6 @@
 import Data.Fixed (mod')
 import Text.Printf ()
+import Debug.Trace
 
 --- every number N can be put in the form N = (S + K)**2 where S is a integer and 0 <= K < 1
 --- where if k == 0 then N would be a square.
@@ -11,10 +12,13 @@ lBlock x y = (2 * max (abs x) (abs y) ) + if (x+y) > 0 then (-1.0) else 0.0
 -- as (S + 2S + 1) == (S+1) **
 funK s n = (sqrt $ (s ** 2) + (2 * n * s)) - s
 
-atan' :: (Ord p, Floating p) => p -> p -> p
+atan' :: (Ord p, Floating p, Show p) => p -> p -> p
+
+--atan' x y | trace ("aTan' has an issue with" ++ show x ++ " and " ++ show y) False = undefined
+atan' 0 _ = 0.75
 atan' x y
     -- the results are mirrored on the x+y=0.5 line
-    | (x + y) > 1e-5 = atan' (0.5 - x) (0.5 - y)
+    | (x + y) > 0 = atan' (0.5 - x) (0.5 - y)
     | x == 0 = 0.75
     -- Forces 180 rotation to be 1 not 0
     | x == (-y) && y < x = 1
@@ -22,6 +26,7 @@ atan' x y
     where 
         result = ((atan (y/x)) / pi) + 0.25
         
+ans 0 1 = 3
 ans x y = 
     let 
         s = lBlock x y
@@ -57,6 +62,7 @@ mapping2 (x, y)
         s = max (abs x) (abs y)
         angle = 45
 
+mapping3 :: (Float, Float) -> (Float, Float)
 mapping3 (x, y) = 
     let
         angle = mapping2(x, y) * (pi / 180)
