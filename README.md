@@ -1,4 +1,4 @@
-* spiral.hs
+# Spiral.hs
 Orginal problem:
 Create a square 2D array of width L called *grid* the top left is zero, then increases by one as you move to the right then continues to increase as you move clockwise. This patten continues as the numbers spiral inside i.e.
 
