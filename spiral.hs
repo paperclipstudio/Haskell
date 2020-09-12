@@ -2,51 +2,57 @@ import Data.Fixed (mod')
 import Text.Printf ()
 import Debug.Trace
 
+-- Coord data type
+data Position = Coor Float Float | Origin
+
+sumPos (Coor x y) = x + y
+vect (Coor x y) = max (abs x) (abs y)
+instance Show Position where
+    show (Coor x y) = "(" ++ Prelude.show x ++ "," ++ Prelude.show y ++ ")"
+    show Origin = "(0, 0)"
+
 --- every number N can be put in the form N = (S + K)**2 where S is a integer and 0 <= K < 1
 --- where if k == 0 then N would be a square.
 --- In this problem you can group numbers into L-Blocks by there S number, then there K value is
 --- based on the angle pass 
 
-lBlock x y = (2 * max (abs x) (abs y) ) + if (x+y) > 0 then (-1.0) else 0.0  
+lBlock coor = (2 * vect coor ) + if (sumPos coor) > 0 then (-1.0) else 0.0  
 -- Takes in S and percent to increase it by (between 0 and 2S)
 -- as (S + 2S + 1) == (S+1) **
 funK s n = (sqrt $ (s ** 2) + (2 * n * s)) - s
 
-atan' :: (Ord p, Floating p, Show p) => p -> p -> p
+--atan' :: (Ord p, Floating p, Show p) => p -> p -> p
 
---atan' x y | trace ("aTan' has an issue with" ++ show x ++ " and " ++ show y) False = undefined
-atan' 0 _ = 0.75
-atan' x y
+--atan' :: Position -> Double
+--atan' input@(Coor x y) | trace ("aTan' has an issue with" ++ show (sumPos input) ++ " and " ++ show y) False = undefined
+atan' input@(Coor x y)
     -- the results are mirrored on the x+y=0.5 line
-    | (x + y) > 0 = atan' (0.5 - x) (0.5 - y)
+    | x == (-y) && y < 0 = 999
+    | sumPos input > 1e-15 = atan' (Coor (0.5 - x) (0.5 - y))
     | x == 0 = 0.75
     -- Forces 180 rotation to be 1 not 0
-    | x == (-y) && y < x = 1
+    | x == (-y) && y < 0 = 999
     | otherwise = result + if result < 0 then 1 else 0
     where 
         result = ((atan (y/x)) / pi) + 0.25
         
-ans 0 1 = 3
-ans x y = 
+ans (Coor 0 1) = 3
+ans Origin = 0
+ans input@(Coor x y) = 
     let 
-        s = lBlock x y
+        s = lBlock input
         alpha = (pi/(2 * s)) * (y - x + s)
-        (newX, newY) = mapping3(x, y)
-        k = funK s (atan' newX newY)
+        mappedInput = mapping3 input
+        k = funK s (atan' mappedInput)
     in
         round $ (s + k) ** 2 
 
-split (x, y) = let
-    (newX, newY) = mapping3(x, y)
-    in
-    atan' newX newY
-
 -- grid of (x, y) coords to use as input
-grid size = reverse $ [row y | y <- [(-size)..(size)]] where row y = [(x,y)| x <- [(-size)..size]]
+grid size = reverse $ [row y | y <- [(-size)..(size)]] where row y = [Coor x y| x <- [(0-size)..size]]
 
-sectonGrid = [row y | y <- [(-100.0)..(-90)]] where row y = [(x,y)| x <- [(-100.0)..(-90)]]
+sectonGrid startX startY endX endY = [row y | y <- [startY.. endY]] where row y = [Coor x y| x <- [startX.. endX]]
 
-mappedGrid = applyFunc (\(x, y) -> ans x y) sectonGrid
+mappedGrid = applyFunc ans (sectonGrid 90 (-100)  (100) (-90)) 
 
 mapping (x, y) = let s = max (abs x) (abs y)
                      alpha = x - y + 10
@@ -62,17 +68,18 @@ mapping2 (x, y)
         s = max (abs x) (abs y)
         angle = 45
 
-mapping3 :: (Float, Float) -> (Float, Float)
-mapping3 (x, y) = 
+mapping3 :: Position -> Position
+mapping3 Origin = Origin
+mapping3 input@(Coor x y) = 
     let
         angle = mapping2(x, y) * (pi / 180)
         s = max (abs x) (abs y)
         newX = s * (cos angle)
         newY = s * (sin angle)
     in
-        (newX, newY)
+        Coor newX newY
 -- output 
-grid2 = applyFunc (\(x, y) -> ans x y) (grid 3)
+grid2 = applyFunc ans (grid 3)
 grid3 = applyFunc mapping3 (grid 5)
 
 applyFunc func array =  map (map func ) array
