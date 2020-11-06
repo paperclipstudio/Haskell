@@ -1,6 +1,6 @@
 module Board where
-    import Tile
-    type Coor = (Int, Int)
+    import Tile 
+    import Coor
 
     data Board = Board {
     tiles :: [[Tile]],
@@ -19,7 +19,7 @@ module Board where
 
 
     slideTile :: Board -> Tile -> Coor -> Board
-    slideTile b t c 
+    slideTile b t (Coor c) 
         | fst c == -1 = b -- Left
         | fst c == width b = b -- right
         | snd c == 0 = b -- top
@@ -31,4 +31,4 @@ module Board where
         | otherwise = xss
     --testBoard :: Board 
     testBoard :: Board
-    testBoard = (Board [[Corner, Straight, Corner], [Tee, Goal, Tee], [Corner, Straight, Corner]] [(0, 0)] (1, 1))
+    testBoard = (Board [[Corner None, Straight None, Corner None], [Tee None, Goal None, Tee None], [Corner None, Straight None , Corner None]] [Coor (0, 0)] (Coor (1, 1)))

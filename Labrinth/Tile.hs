@@ -1,14 +1,15 @@
 module Tile where
+    import Coor
 
-data Tile = BackTrack | Fire | Freeze | Double | Tee | Straight | Goal | Corner 
-    deriving (Eq)
+    data Tile = BackTrack | Fire | Freeze | Double | Tee Coor | Straight Coor | Goal Coor| Corner Coor
+        deriving (Eq)
 
-instance Show Tile where
-    show Tee = "T"
-    show Straight =
-        "-"
-    show Corner = 
-        "¬"
-    show Goal =
-        "+"
-    show _ = "A"
+    instance Show Tile where
+        show (Tee _) = "T"
+        show (Straight _) =
+            "-"
+        show (Corner _)= 
+            "¬"
+        show (Goal _)=
+            "+"
+        show _ = "A"
