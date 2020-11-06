@@ -1,3 +1,4 @@
+module SilkBag where
 import Tile
 import Data.Hashable
 
