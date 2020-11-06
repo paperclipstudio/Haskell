@@ -1,11 +1,9 @@
 module Tile where
 
-data Tile = ActionTile | FloorTile
-    deriving Eq
-data ActionTile = BackTrack | Fire | Freeze | Double 
-data FloorTile = Tee | Straight | Goal | Corner 
+data Tile = BackTrack | Fire | Freeze | Double | Tee | Straight | Goal | Corner 
+    deriving (Eq)
 
-instance Show FloorTile where
+instance Show Tile where
     show Tee = "T"
     show Straight =
         "-"
@@ -13,3 +11,4 @@ instance Show FloorTile where
         "¬"
     show Goal =
         "+"
+    show _ = "A"
