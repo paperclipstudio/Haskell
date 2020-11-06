@@ -39,7 +39,11 @@ updateCurrentPlayer gs player = gs {players = newPs}
         newPs = take turn ps ++ player : drop (turn+1) ps
         turn = playerTurn gs
 
-
-
+floorPhase :: GameState -> SlideChoice -> GameState
+floorPhase gs sc = gs{board = slideTile b t coor }
+    where
+        b = board gs
+        t = fst sc
+        coor = snd sc
 testGameState :: GameState
 testGameState = GameState 2 4 testBoard (SilkBag [Corner, Tee, Fire] 123) [[],[],[],[]] Draw
