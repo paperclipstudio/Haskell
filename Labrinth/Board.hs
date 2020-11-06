@@ -4,7 +4,7 @@ module Board where
 
     data Board = Board {
     tiles :: [[Tile]],
-    players :: [Coor],
+    playersPieces :: [Coor],
     goal :: Coor
     }
 
