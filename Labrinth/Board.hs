@@ -3,19 +3,16 @@ module Board where
     import Coor
 
     data Board = Board {
-    tiles :: [[Tile]],
+    tiles :: [Square],
     playersPieces :: [Coor],
-    goal :: Coor
+    goal :: Coor,
+    width :: Int,
+    height :: Int
     }
 
-    width = length.tiles
-    height = length.(!! 0).tiles
-
-    showOneLine :: [Tile] -> String
-    showOneLine = foldr (\y x -> x ++ (show y)) ""
 
     instance Show Board where
-        show (xs) = foldr (\x y -> showOneLine x ++ "\n" ++ y) "" (tiles xs)
+        show (xs) = [Coor (x y) | x <- [0..width-1], y <- [0..height-1]]
 
 
     slideTile :: Board -> Tile -> Coor -> Board
@@ -31,4 +28,8 @@ module Board where
         | otherwise = xss
     --testBoard :: Board 
     testBoard :: Board
-    testBoard = (Board [[Corner None, Straight None, Corner None], [Tee None, Goal None, Tee None], [Corner None, Straight None , Corner None]] [Coor (0, 0)] (Coor (1, 1)))
+    testBoard = (Board [
+        (Square Corner (Coor (0, 0))), (Square Corner (Coor (1, 0))), (Square Corner (Coor (2, 0))),
+        (Square Corner (Coor (0, 1))),(Square Corner (Coor (1, 1))),(Square Corner (Coor (2, 1))),
+        (Square Corner (Coor (0, 2))),(Square Corner (Coor (1, 2))),(Square Corner (Coor (2, 2)))] 
+        [Coor (0, 0)] (Coor (1, 1)) 3 3)
