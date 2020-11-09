@@ -15,6 +15,7 @@ module Tile where
         show _ = "A"
 
     data Square = Square Tile Coor
+        deriving (Eq)
     getCoor :: Square -> Coor
     getCoor (Square _ c) = c 
     instance Show Square where
