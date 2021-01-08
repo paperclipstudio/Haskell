@@ -1,4 +1,6 @@
 
+-- Solves but it is too slow to run
+
 primes = 2 : [x | x <- [3..], all (\y -> x `mod` y /= 0) 
                    (takeWhile (<= (floor . sqrt $ fromIntegral x)) primes)]
 
@@ -15,4 +17,4 @@ isPrime x = x `elem` (takeWhile (<=x) primes)
 -- Prime Generating Interger
 isPGI x = all (\t -> isPrime(t + (x `div` t))) (divisors x)
 
-solve = (sum.filter isPGI) [1..100000]
+solve = (filter isPGI.takeWhile (<100000).map (\x -> x-1)) primes
